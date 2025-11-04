@@ -1,13 +1,19 @@
-
-
-
 def train(epoch, model, train_loader, criterion, optimizer):
     model.train() # Set the model to training mode
     running_loss = 0.0
     correct = 0
     total = 0
 
+    device = next(model.parameters()).device
+
     for batch_idx, (inputs, targets) in enumerate(train_loader):
+ 
+        if isinstance(inputs, (list, tuple)):
+            inputs = [i.to(device) for i in inputs]
+        else:
+            inputs = inputs.to(device)
+        targets = targets.to(device)
+
         optimizer.zero_grad()
         outputs = model(inputs)
         loss = criterion(outputs, targets)
